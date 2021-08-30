@@ -13,6 +13,8 @@ import {
     fetchComments,
     fetchDishes,
     fetchPromos,
+    fetchLeaders,
+    postFeedback,
 } from "../redux/ActionCreators";
 import { actions } from "react-redux-form";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
@@ -38,20 +40,21 @@ const mapDispatchToProps = (dispatch) => ({
     fetchPromos: () => {
         dispatch(fetchPromos()); // calling the thunk fetchPromos()
     },
+    fetchLeaders: () => {
+        dispatch(fetchLeaders()); // calling the thunk fetchLeaders()
+    },
     resetFeedbackForm: () => {
         dispatch(actions.reset("feedback"));
     },
+    postFeedback: (feedback) => dispatch(postFeedback(feedback)),
 });
 
 class Main extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         this.props.fetchDishes();
         this.props.fetchComments();
         this.props.fetchPromos();
+        this.props.fetchLeaders();
     }
 
     render() {
@@ -73,10 +76,12 @@ class Main extends Component {
                     promosLoading={this.props.promotions.isLoading}
                     promosErrMsg={this.props.promotions.errMsg}
                     leader={
-                        this.props.leaders.filter(
+                        this.props.leaders.leaders.filter(
                             (leader) => leader.featured
                         )[0]
                     }
+                    leadersLoading={this.props.leaders.isLoading}
+                    leadersErrMsg={this.props.leaders.errMsg}
                 />
             );
         };
@@ -130,6 +135,7 @@ class Main extends Component {
                                         resetFeedbackForm={
                                             this.props.resetFeedbackForm
                                         }
+                                        postFeedback={this.props.postFeedback}
                                     />
                                 )}
                             />
